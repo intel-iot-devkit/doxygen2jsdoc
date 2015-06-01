@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /*
  * Author: Dina M Suehiro <dina.m.suehiro@intel.com>
  * Copyright (c) 2015 Intel Corporation.

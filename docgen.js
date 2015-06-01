@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /*
  * Author: Heidi Pan <heidi.pan@intel.com>
  * Copyright (c) 2015 Intel Corporation.
