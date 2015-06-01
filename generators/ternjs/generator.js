@@ -91,13 +91,9 @@ function GENERATE_CLASSES(classes) {
 // generate method spec
 function GENERATE_METHOD(name, spec) {
   var doc = {};
-  if (name.search(/!+$/) == -1) {
-    doc[name] = {
-      '!type': 'fn(' + GENERATE_PARAMS(spec.params) + ')' + GENERATE_RETURN(spec.return),
-      '!doc': spec.description
-    }
-  } else {
-    // TODO: figure out what to do with overloaded functions
+  doc[name] = {
+    '!type': 'fn(' + GENERATE_PARAMS(spec.params) + ')' + GENERATE_RETURN(spec.return),
+    '!doc': spec.description
   }
   return doc;
 }

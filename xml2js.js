@@ -193,7 +193,7 @@ var xml2js = {
                 if (_.has(xml2js.CLASSES, c)) {
                   xml2js.CLASSES[c].group = group;
                 } else {
-                  console.log('WARNING: Group ' + group + ' has unknown class ' + c);
+                  console.log('Warning: Group ' + group + ' has unknown class ' + c);
                 }
               });
             }
