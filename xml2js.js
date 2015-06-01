@@ -127,7 +127,7 @@ var xml2js = {
   addOptions: function(opts) {
     xml2js.opts = opts;
     return opts
-      .option('-i, --inputdir [directory]', 'directory for xml files', __dirname + '/xml/mraa')
+      .option('-i, --inputdir [directory]', 'directory for xml files', 'xml')
       .option('-c, --custom [file]', 'json for customizations')
       .option('-t, --typemaps [directory]', 'directory for custom pointer type maps')
       .option('-g, --imagedir [directory]', 'directory to link to where the images will be kept', '')
@@ -138,7 +138,7 @@ var xml2js = {
   // parse doxygen xml -> js-format specs
   // TODO: figure out whether we need to document any protected methods/variables
   parse: function() {
-    var XML_GRAMMAR_SPEC = 'grammars/xml.peg';
+    var XML_GRAMMAR_SPEC = __dirname + '/grammars/xml.peg';
     var NAMESPACE_SPEC = xml2js.opts.inputdir + '/namespace' + xml2js.opts.module + '.xml';
     var CLASS_SPEC = function(c) { return xml2js.opts.inputdir + '/' + c + '.xml'; }
     var TYPES_SPEC = xml2js.opts.inputdir + '/types_8h.xml';
