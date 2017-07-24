@@ -25,17 +25,19 @@
  */
 
 // dependencies
-var opts    = require('commander'),     // for command line args
-    fs      = require('fs'),                // for file system access
-    path      = require('path');              // for file path parsing
+var opts    = require('commander'),   // for command line args
+    fs      = require('fs'),          // for file system access
+    path    = require('path'),        // for file path parsing
+    dbg     = require('debug');       // for debug logging
+
+var debug = dbg('tolower');
 
 // parse command line arguments
 opts
   .option('-i, --inputdir [directory]', 'product documents directory', __dirname + '/docs/yuidoc/upm')
   .parse(process.argv);
 
-// Set to true for console output
-var debug = true;
+debug('inputdir', opts.inputdir);
 
 // Global arrays tracking the files that have been renamed
 var originalFiles = [];
@@ -59,6 +61,7 @@ renameLinks(modulesFiles);
 // Helper function that returns paths to the html files in the specified directory
 function getHtmlFilenames (directory)
 {
+  debug('getHtmlFilenames', directory);
   return fs.readdirSync(directory).map(function (file) {
     return path.join(directory, file);
   }).filter(function (file) {
@@ -74,15 +77,14 @@ function renameFiles(files)
 {
   files.forEach(function (file)
   {
+    debug('renameFiles', 'processing', file);
     var originalName = path.basename(file);
     var newFileName = originalName.toLowerCase();
     var directory = path.dirname(file);
     if (originalName != newFileName)
     {
       fs.renameSync(file, directory + "/" + newFileName); //, function(err)
-
-      if (debug)
-        console.log('Renamed: %s --> %s', originalName, newFileName);
+      debug('renameFiles',  'renamed', originalName, '-->', newFileName);
 
       originalFiles.push(originalName);
       renamedFiles.push(newFileName);
@@ -96,23 +98,27 @@ function renameLinks (files)
 {
   if (originalFiles.length <= 0)
   {
-    if (debug)
-      console.log("No links to rename.");
+    debug('renameLinks', 'No links to rename.');
     return;
   }
 
   files.forEach(function (file)
   {
+    debug('renameLinks', 'processing', file);
+
     // Read the file
-    data = fs.readFileSync(file, 'ascii');
+    var data = fs.readFileSync(file, 'ascii');
 
     // Find/replace the file names that were renamed
     for (var i = 0; i < originalFiles.length; i++)
     {
-      var findString = '/' + originalFiles[i] + '\"';
-      var replaceString = '/' + renamedFiles[i] + '\"';
+      var findString = '/' + originalFiles[i] + '"';
+      var replaceString = '/' + renamedFiles[i] + '"';
 
-      data = data.replace(findString, replaceString);
+      if(data.indexOf(findString) !== -1) {
+        debug('renameLinks', 'replacing', findString, '-->', replaceString);
+        data = data.replace(findString, replaceString);
+      }
     }
 
     // Write back
@@ -120,8 +126,5 @@ function renameLinks (files)
       if (err)
         throw err;
     });
-
-    if (debug)
-      console.log('Renamed links in: %s', file);
   });
 }

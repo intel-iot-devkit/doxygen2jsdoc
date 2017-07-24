@@ -37,7 +37,7 @@ var xml2js  = require('./xml2js')
 _.extend(opts, { addOptions: function(module) { return module.addOptions(opts); } });
 opts
   .option('-m, --module [module]', 'module name for which to build documentation', 'mraa')
-  .option('-f, --formats [formats]', 'format for js comments', 'yuidoc,ternjs')
+  .option('-f, --formats [formats]', 'format for js comments', 'yuidoc,ternjs,jsdoc')
   .option('-o, --outdir [directory]', 'top directory to build documentation', __dirname + '/jsdoc')
   .addOptions(xml2js)
   .parse(process.argv);
@@ -47,15 +47,30 @@ opts
 Promise.promisifyAll(fs);
 Promise.promisifyAll(mkdirp);
 
+// Global Error Handlers
+process.on('uncaughtException', function (error) {
+  console.error('Uncaught Exception:', error);
+  process.exit(1); // eslint-disable-line no-process-exit
+});
+
+process.on('unhandledRejection', function (reason, p) {
+  console.error('Unhandled Rejection at:', p, 'reason:', reason);
+  process.exit(1); // eslint-disable-line no-process-exit
+});
 
 // main
-xml2js.parse().then(function(specjs) {
-  var formats = opts.formats.split(',');
-  Promise.all(_.map(formats, function(format) {
-    var generateDocs = require(__dirname + '/generators/' + format + '/generator');
-    var dir = opts.outdir + '/' + format + '/' + specjs.MODULE;
-    return mkdirp.mkdirpAsync(dir).then(function() {
-      return fs.writeFileAsync(dir + '/doc.js', generateDocs(specjs));
-    });
-  }));
-});
+var FORMATS = opts.formats.split(',');
+
+xml2js.parse()
+  .then(function(specjs) {
+    return Promise.all(_.map(FORMATS, function(format) {
+      var generateDocs = require(__dirname + '/generators/' + format + '/generator');
+      var dir = opts.outdir + '/' + format + '/' + specjs.MODULE;
+      return mkdirp.mkdirpAsync(dir).then(function() {
+        return fs.writeFileAsync(dir + '/doc.js', generateDocs(specjs));
+      });
+    }));
+  })
+  .catch(function(error) {
+    throw error;
+  });
