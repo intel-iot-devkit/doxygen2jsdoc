@@ -3,14 +3,16 @@
   "version": "0.1.0",
   "description": "",
   "author": "Heidi Pan <heidi.pan@intel.com>",
-  "contributors": [{
-    "name": "Dina M Suehiro",
-    "email": "dina.m.suehiro@intel.com"
-  }],
+  "contributors": [
+    {
+      "name": "Dina M Suehiro",
+      "email": "dina.m.suehiro@intel.com"
+    }
+  ],
   "bin": {
     "docgen": "docgen.js",
     "tolower": "tolower.js"
-  },  
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/intel-iot-devkit/doxygen2jsdoc"
@@ -19,6 +21,7 @@
     "bluebird": "2.9.24",
     "commander": "2.7.1",
     "lodash": "3.6.0",
+    "mkdirp": "^0.5.1",
     "pegjs": "0.8.0"
   },
   "license": "MIT"
